@@ -13,7 +13,6 @@ extends IndexedSeq[Nucleotide] with IndexedSeqLike[Nucleotide, RNA] {
   /**
    * Import companion object attributes.
    */
-
   import RNA._
 
   /**

@@ -14,30 +14,29 @@ object Ribosome {
    */
   def decode(rna: RNA, rf: Int = 0): Seq[PeptideChain] = {
 
+    // input parameter rna ia an indexed seq, i.e. immutable
     var started: Boolean = false
     var sequence: ListBuffer[PeptideChain] = ListBuffer.empty
     var chain: ListBuffer[AminoAcid] = ListBuffer.empty
 
     for (codon <- rna.codons(rf)) codon match {
-      case Codon.Start         => {
+      case Codon.Start =>
         chain += codon.aminoAcid
         started = true
-      }
-      case Codon.Stop(_, _, _) => {
+
+      case Codon.Stop(_, _, _) =>
         if (started) {
-          sequence += chain.toSeq
+          sequence += chain
           chain = ListBuffer.empty
         }
-      }
-      case codon: Codon        => {
+      case codon: Codon =>
         if (started) {
           chain += codon.aminoAcid
         }
-      }
     }
 
-    if (!chain.isEmpty) sequence += chain.toSeq
-    sequence.toSeq
+    if (chain.nonEmpty) sequence += chain
+    sequence
   }
 }
 

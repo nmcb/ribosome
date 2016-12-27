@@ -107,23 +107,3 @@ object AminoAcid {
     case _ => None
   }
 }
-
-object AminoAcidValidation extends App {
-  val rna = RNA(C, A, A, G, G, G, C, U, U, U, C, C, C)
-  val xs  = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
-
-  def apply() {
-    // requires co-variant sequence argument
-    require(Some(Glutamine) == AminoAcid.fromCodon(Codon.fromSeq(xs)))
-    require(Some(Glutamine) == AminoAcid.fromCodon(Codon.fromSeq(rna)))
-
-    // requires to be orthogonal to cfl., i.e the codons corner-cases:
-    require(Some(Methionine) == AminoAcid.fromCodon(Codon.Start))
-    require(None == AminoAcid.fromCodon(Codon.Stop.Amber))
-    require(None == AminoAcid.fromCodon(Codon.Stop.Occur))
-    require(None == AminoAcid.fromCodon(Codon.Stop.Opal))
-  }
-
-  apply()
-}
-

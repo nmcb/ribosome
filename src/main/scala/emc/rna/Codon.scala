@@ -1,15 +1,11 @@
 package emc.rna
 
 case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide) {
-  val rna:RNA                        = RNA(_1, _2, _3)
-  val length: Int                    = Codon.GROUP_SIZE
-  val iterator: Iterator[Nucleotide] = rna.iterator
+  lazy val asRNA : RNA      = RNA(_1, _2, _3)
+  lazy val isStart: Boolean = Codon.Start.equals(this)
+  lazy val isStop: Boolean  = Codon.StopCodons.contains(this)
 
-  lazy val aminoAcid = AminoAcid.fromCodon(this).get
-
-  def isStart = Codon.Start.equals(this)
-  def isStop = Codon.StopCodons.contains(this)
-  def encodesAminoAcid = !isStop
+  def aminoAcid: AminoAcid = AminoAcid.fromCodon(this).getOrElse({throw new RuntimeException("dirty rna")})
 }
 
 object Codon {
@@ -17,7 +13,7 @@ object Codon {
   /**
    * The encoding group size of a codon in nucleotides.
    */
-  val GROUP_SIZE = 3
+  val GroupSize = 3
 
   /**
    * Defines the start codon.
@@ -57,7 +53,10 @@ object Codon {
    * @return A codon representation of the first three nucleotides of given sequence.
    * @throws IndexOutOfBoundsException If given sequence does not contain enough nucleotides to construct a codon.
    */
-  def fromSeq(rna: Seq[Nucleotide]) = Codon(rna(0), rna(1), rna(2))
+  def fromSeq(rna: Seq[Nucleotide]): Codon = rna match {
+    case Seq(_1, _2, _3, _*) => Codon(_1, _2, _3)
+    case _                   => throw new RuntimeException("not enough nucleotides: " + rna)
+  }
 }
 
 

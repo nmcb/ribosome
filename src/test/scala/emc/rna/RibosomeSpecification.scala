@@ -5,13 +5,13 @@ import org.scalatest.Matchers._
 
 class RibosomeSpecification extends FunSpec {
 
-  val fixture = RNA(C, C, C, C, C) ++ // semi-random prefix
-  Codon.Start.rna ++                  // [A,U,G]
+  val fixture: RNA = RNA(C, C, C, C, C) ++ // semi-random prefix
+  Codon.Start.asRNA ++                  // [A,U,G]
   RNA(A, U, G, C, C, C) ++            // semi-random post-start junk rna
-  Codon.Stop.Amber.rna ++             // known amber codon, also a stop codon
+  Codon.Stop.Amber.asRNA ++             // known amber codon, also a stop codon
   RNA(C, C, C) ++                     // semi-random junk rna
-  Codon.Stop.Opal.rna ++              // known opal codon, also a stop codon
-  Codon.Start.rna ++                  // start again,...
+  Codon.Stop.Opal.asRNA ++              // known opal codon, also a stop codon
+  Codon.Start.asRNA ++                  // start again,...
   RNA(C, A, U, G)                     // but include [A,U,G], after just one nucleotide
 
   // expected results at given reference frame

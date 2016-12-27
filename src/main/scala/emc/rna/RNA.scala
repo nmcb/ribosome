@@ -1,8 +1,8 @@
 package emc.rna
 
+import collection.mutable
 import collection.generic.CanBuildFrom
 import collection.IndexedSeqLike
-import collection.mutable.{Builder, ArrayBuffer}
 
 /**
  * A ribonucleic acid sequence, e.g. an RNA sequence of nucleotide molecules.
@@ -27,7 +27,7 @@ extends IndexedSeq[Nucleotide] with IndexedSeqLike[Nucleotide, RNA] {
    * Mandatory: re-implementation of ‘newBuilder‘ in ‘IndexedSeq‘ delegating to
    * the companion object builder factory.
    **/
-  override protected[this] def newBuilder: Builder[Nucleotide, RNA] = RNA.newBuilder
+  override protected[this] def newBuilder: mutable.Builder[Nucleotide, RNA] = RNA.newBuilder
 
   /**
    * Optional:  re-implementation of foreach, making it more efficient in space.
@@ -52,8 +52,8 @@ extends IndexedSeq[Nucleotide] with IndexedSeqLike[Nucleotide, RNA] {
    * @return A codon iterator for this sequence.
    */
   def codons(rf: Int): Iterator[Codon] = for {
-    group <- drop(rf).grouped(Codon.GROUP_SIZE)
-    if (group.size == Codon.GROUP_SIZE)
+    group <- drop(rf).grouped(Codon.GroupSize)
+    if group.size == Codon.GroupSize
   } yield Codon.fromSeq(group)
 }
 
@@ -81,7 +81,7 @@ object RNA {
    */
   def fromSeq(nucleotides: Seq[Nucleotide]): RNA = {
     val slots = new Array[Int]((nucleotides.length + N - 1) / N)
-    for (i <- 0 until nucleotides.length) slots(i / N) |= Nucleotide.toInt(nucleotides(i)) << (i % N * S)
+    for (i <- nucleotides.indices) slots(i / N) |= Nucleotide.toInt(nucleotides(i)) << (i % N * S)
     new RNA(slots, nucleotides.length)
   }
 
@@ -90,7 +90,7 @@ object RNA {
    * @param nucleotides An array of nucleotides to create a RNA sequence for.
    * @return The created RNA sequence.
    */
-  def apply(nucleotides: Nucleotide*) = fromSeq(nucleotides)
+  def apply(nucleotides: Nucleotide*): RNA = fromSeq(nucleotides)
 
   /**
    * Defines the pattern match injection point.
@@ -103,7 +103,7 @@ object RNA {
    * Creates a new RNA sequence builder function.
    * @return The RNA sequence builder.
    */
-  def newBuilder: Builder[Nucleotide, RNA] = new ArrayBuffer mapResult fromSeq
+  def newBuilder: mutable.Builder[Nucleotide, RNA] = new mutable.ArrayBuffer mapResult fromSeq
 
   /**
    * Defines the advice for a Seq[Nucleotide] to RNA collection type,
@@ -111,9 +111,9 @@ object RNA {
    * @return The collection's creation advice.
    */
   implicit def canBuildFrom: CanBuildFrom[RNA, Nucleotide, RNA] = new CanBuildFrom[RNA, Nucleotide, RNA] {
-    def apply(): Builder[Nucleotide, RNA] = newBuilder
+    def apply(): mutable.Builder[Nucleotide, RNA] = newBuilder
 
-    def apply(from: RNA): Builder[Nucleotide, RNA] = newBuilder // Used to match the receiver type if not final.
+    def apply(from: RNA): mutable.Builder[Nucleotide, RNA] = newBuilder // Used to match the receiver type if not final.
   }
 }
 

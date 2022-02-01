@@ -60,7 +60,7 @@ extends IndexedSeq[Nucleotide] with IndexedSeqLike[Nucleotide, RNA] {
 object RNA {
 
   /**
-   * Defines the number of bits in a slot, i.e the number of bit's needed to encode one nucleotide.
+   * Defines the number of bits in a nucleotide slot, i.e the number of bit's needed to encode one nucleotide.
    */
   private val S = 2
 
@@ -70,7 +70,7 @@ object RNA {
   private val M = (1 << S) - 1
 
   /**
-   * Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an Int.
+   * Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an integer of 32 bits.
    */
   private val N = 32 / S
 

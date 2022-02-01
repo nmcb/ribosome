@@ -1,16 +1,10 @@
 *.class
 *.log
-
-# sbt specific
-.cache
-.history
-.lib/
-dist/*
+.metals/
+metals.sbt
+.bloop/
+.vscode/
+.bsp/
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-
 .idea/
 .DS_Store

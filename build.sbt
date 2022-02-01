@@ -1,23 +1,16 @@
 val ProjectName      = "ribosome"
 val OrganisationName = "emc"
-val ProjectVersion   = "0.2.1"
+val ProjectVersion   = "0.3.0"
 
-val ScalaVersion     = "2.11.8"
-
-def common: Seq[Setting[_]] = Seq(
-  organization := OrganisationName,
-  version      := ProjectVersion,
-  scalaVersion := ScalaVersion
-)
+val ScalaVersion     = "2.13.8"
 
 lazy val root = (project in file("."))
-  .settings( common: _*)
   .settings(
-    name := ProjectName,
+    scalaVersion := ScalaVersion,
+    organization := OrganisationName,
+    version      := ProjectVersion,
+    name         := ProjectName,
     libraryDependencies ++= Seq(
-      "org.scalatest"     %% "scalatest" % "2.2.6"  % "test",
-      "com.lihaoyi"       %  "ammonite"  % "0.8.1"  % "test" cross CrossVersion.full
+      "org.scalatest"     %% "scalatest" % "3.2.10"  % "test"
     )
   )
-
-initialCommands in (Test, console) := """ammonite.Main().run()"""

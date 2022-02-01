@@ -1,9 +1,9 @@
 package emc.rna
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class RNASpecification extends FunSpec {
+class RNASpecification extends AnyFunSpec with Matchers {
 
   val fixture: RNA = RNA(C, C, C, C, C) ++ // semi-random prefix
   Codon.Start.asRNA ++                  // [A,U,G]

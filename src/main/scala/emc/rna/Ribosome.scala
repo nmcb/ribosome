@@ -26,7 +26,7 @@ object Ribosome {
 
       case Codon.Stop(_, _, _) =>
         if (started) {
-          sequence += chain
+          sequence += chain.toSeq
           chain = ListBuffer.empty
         }
       case codon: Codon =>
@@ -35,8 +35,8 @@ object Ribosome {
         }
     }
 
-    if (chain.nonEmpty) sequence += chain
-    sequence
+    if (chain.nonEmpty) sequence += chain.toSeq
+    sequence.toSeq
   }
 }
 

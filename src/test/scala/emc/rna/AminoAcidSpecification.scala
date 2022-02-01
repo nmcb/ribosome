@@ -1,9 +1,11 @@
 package emc.rna
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec._
+import org.scalatest.matchers.should._
 
-class AminoAcidSpecification extends FunSpec {
+class AminoAcidSpecification
+  extends AnyFunSpec
+  with Matchers {
 
   val fixture = RNA(C, A, A, G, G, G, C, U, U, U, C, C, C)
   val xs      = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)

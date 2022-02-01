@@ -1,119 +1,137 @@
 package emc.rna
 
-import collection.mutable
-import collection.generic.CanBuildFrom
-import collection.IndexedSeqLike
+import collection._
 
 /**
  * A ribonucleic acid sequence, e.g. an RNA sequence of nucleotide molecules.
  */
 final class RNA private(val slots: Array[Int], val length: Int)
-extends IndexedSeq[Nucleotide] with IndexedSeqLike[Nucleotide, RNA] {
+  extends immutable.IndexedSeq[Nucleotide]
+  with immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
+  with immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
+  { rna =>
 
-  /**
-   * Import companion object attributes.
-   */
   import RNA._
 
-  /**
-   * Mandatory sequencing implementation of ‘apply‘ in ‘IndexedSeq‘
-   */
+  /** Returns the nucleotide at given index */
   def apply(index: Int): Nucleotide = {
     if (index < 0 || length <= index) throw new IndexOutOfBoundsException
     Nucleotide.fromInt(slots(index / N) >> (index % N * S) & M)
   }
 
-  /**
-   * Mandatory: re-implementation of ‘newBuilder‘ in ‘IndexedSeq‘ delegating to
-   * the companion object builder factory.
-   **/
-  override protected[this] def newBuilder: mutable.Builder[Nucleotide, RNA] = RNA.newBuilder
+  /** Returns an RNA sequence from given nucleotides. */
+  override protected def fromSpecific(nucleotides: IterableOnce[Nucleotide]): RNA =
+    RNA.fromSpecific(nucleotides)
+
+  /** Returns an RNA sequence builder from given specific nucleotides. */
+  override protected def newSpecificBuilder: mutable.Builder[Nucleotide, RNA] =
+    RNA.newBuilder
+
+  /** Returns an empty RNA sequence. */
+  override def empty: RNA =
+    RNA.empty
+
+  // Overloads returning RNA
+
+  final def concat(nucleotides: IterableOnce[Nucleotide]): RNA =
+    strictOptimizedConcat(nucleotides, newSpecificBuilder)
+
+  @inline
+  final def ++(nucleotides: IterableOnce[Nucleotide]): RNA =
+    concat(nucleotides)
+
+  final def appended(nucleotide: Nucleotide): RNA =
+    (newSpecificBuilder ++= this += nucleotide).result()
+
+  final def appendedAll(nucleotides: Iterable[Nucleotide]): RNA =
+    strictOptimizedConcat(nucleotides, newSpecificBuilder)
+
+  final def prepended(nucleotide: Nucleotide): RNA =
+    (newSpecificBuilder += nucleotide ++= this).result()
+
+  final def prependedAll(nucleotides: Iterable[Nucleotide]): RNA =
+    (newSpecificBuilder ++= nucleotides ++= this).result()
+
+  final def map(f: Nucleotide => Nucleotide): RNA =
+    strictOptimizedMap(newSpecificBuilder, f)
+
+  final def flatMap(f: Nucleotide => IterableOnce[Nucleotide]): RNA =
+    strictOptimizedFlatMap(newSpecificBuilder, f)
 
   /**
-   * Optional:  re-implementation of foreach, making it more efficient in space.
+   * Reimplementation of iterator, making it more efficient in space.
    * We can mitigate against indirection  (necessary for iteration, i.e. in the
    * default implementation)  by utilizing the indexing property of an emc.rna.RNA
    * sequence since we know the length of the sequence and the group size N in
    * terms of emc.rna.Nucleotide symbols.
    */
-  override def foreach[U](f: Nucleotide => U): Unit = {
-    var i = 0
-    var b = 0
-    while (i < length) {
-      b = if (i % N == 0) slots(i / N) else b >>> S
-      f(Nucleotide.fromInt(b & M))
-      i += 1
-    }
-  }
+  override def iterator: Iterator[Nucleotide] =
+    new AbstractIterator[Nucleotide] {
+      var i = 0
+      var b = 0
 
-  /**
-   * A codon iterator for this sequence starting at given reading frame, will
-   * drop {{% SIZE}} remaining nucleotides.
-   * @return A codon iterator for this sequence.
+      def hasNext: Boolean =
+        i < rna.length
+
+      def next(): Nucleotide = {
+        b = if (i % N == 0) slots(i / N) else b >>> S
+        i += 1
+        Nucleotide.fromInt(b & M)
+      }
+    }
+
+  /** Returns a codon iterator for this sequence starting at given reading frame,
+   *  which will drop remaining nucleotides.
+   * @return A codon iterator for this RNA sequence.
    */
-  def codons(rf: Int): Iterator[Codon] = for {
-    group <- drop(rf).grouped(Codon.GroupSize)
-    if group.size == Codon.GroupSize
-  } yield Codon.fromSeq(group)
+  def codons(rf: Int): Iterator[Codon] =
+    for {
+      group <- drop(rf).grouped(Codon.GroupSize)
+      if group.size == Codon.GroupSize
+    } yield Codon.fromSeq(group)
 }
 
-object RNA {
+object RNA extends SpecificIterableFactory[Nucleotide, RNA] {
 
-  /**
-   * Defines the number of bits in a nucleotide slot, i.e the number of bit's needed to encode one nucleotide.
-   */
+  /** Defines the number of bits in a nucleotide slot, i.e the number of bit's needed to encode one nucleotide. */
   private val S = 2
 
-  /**
-   * Defines the bitmask to isolate the least significant slot, i.e. cuts of a nucleotide from an RNA sequence.
-   */
+  /** Defines the bitmask to isolate the least significant slot, i.e. cuts of a nucleotide from an RNA sequence. */
   private val M = (1 << S) - 1
 
-  /**
-   * Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an integer of 32 bits.
-   */
+  /** Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an integer of 32 bits. */
   private val N = 32 / S
 
-  /**
-   * Creates an RNA sequence from given scala collection sequence of nucleotides.
-   * @param nucleotides The sequence of nucleotides.
-   * @return The RNA sequence from given sequence.
-   */
+  /** Creates an RNA sequence from given scala collection sequence of nucleotides.
+    * @param nucleotides The sequence of nucleotides.
+    * @return The RNA sequence from given sequence.
+    */
   def fromSeq(nucleotides: Seq[Nucleotide]): RNA = {
     val slots = new Array[Int]((nucleotides.length + N - 1) / N)
     for (i <- nucleotides.indices) slots(i / N) |= Nucleotide.toInt(nucleotides(i)) << (i % N * S)
     new RNA(slots, nucleotides.length)
   }
 
-  /**
-   * Defines the collection constructor.
-   * @param nucleotides An array of nucleotides to create a RNA sequence for.
-   * @return The created RNA sequence.
-   */
-  def apply(nucleotides: Nucleotide*): RNA = fromSeq(nucleotides)
+  /** Creates an empty RNA sequence.
+    * @return The empty RNA sequence.
+    */
+  def empty: RNA =
+    fromSeq(Seq.empty)
 
-  /**
-   * Defines the pattern match injection point.
-   * @param rna The RNA sequence to inject.
-   * @return The matched rna sequence.
+  /** Creates a mutable RNA sequence builder.
+   * @return The mutable RNA sequence builder.
    */
-  def unapplySeq(rna: RNA): Option[Seq[Nucleotide]] = Some(rna)
+  def newBuilder: mutable.Builder[Nucleotide, RNA] =
+    mutable.ArrayBuffer.newBuilder[Nucleotide].mapResult(fromSeq)
 
-  /**
-   * Creates a new RNA sequence builder function.
-   * @return The RNA sequence builder.
-   */
-  def newBuilder: mutable.Builder[Nucleotide, RNA] = new mutable.ArrayBuffer mapResult fromSeq
-
-  /**
-   * Defines the advice for a Seq[Nucleotide] to RNA collection type,
-   * i.e injected into creation pointcuts of scala's Seq iff it's inferred element type equals Nucleotide.
-   * @return The collection's creation advice.
-   */
-  implicit def canBuildFrom: CanBuildFrom[RNA, Nucleotide, RNA] = new CanBuildFrom[RNA, Nucleotide, RNA] {
-    def apply(): mutable.Builder[Nucleotide, RNA] = newBuilder
-
-    def apply(from: RNA): mutable.Builder[Nucleotide, RNA] = newBuilder // Used to match the receiver type if not final.
-  }
+    /** Creates an RNA sequence from given iterable nucleotides.
+      * @param nucleotides The iterable nucleotides.
+      * @return The RNA sequence from given nucleotides.
+      */
+  def fromSpecific(nucleotides: IterableOnce[Nucleotide]): RNA =
+    nucleotides match {
+      case sequence: Seq[Nucleotide] => fromSeq(sequence)
+      case _ => fromSeq(mutable.ArrayBuffer.from(nucleotides))
+    }
 }
 

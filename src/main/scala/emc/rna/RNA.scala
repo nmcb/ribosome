@@ -11,7 +11,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
   with immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
   { rna =>
 
-    ximport RNA._
+    import RNA._
 
     /** Returns the nucleotide at given index */
     def apply(index: Int): Nucleotide = {

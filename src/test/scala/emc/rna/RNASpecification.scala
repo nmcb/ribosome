@@ -1,18 +1,20 @@
-package emc.rna
+package emc
+package rna
 
 import org.scalatest.funspec._
 import org.scalatest.matchers.should._
 
 class RNASpecification extends AnyFunSpec with Matchers:
 
-  val fixture: RNA = RNA(C, C, C, C, C) ++ // semi-random prefix
-  Codon.Start.asRNA ++                  // [A,U,G]
-  RNA(A, U, G, C, C, C) ++            // semi-random post-start junk rna
-  Codon.Stop.Amber.asRNA ++             // known amber codon, also a stop codon
-  RNA(C, C, C) ++                     // semi-random junk rna
-  Codon.Stop.Opal.asRNA ++              // known opal codon, also a stop codon
-  Codon.Start.asRNA ++                  // start again,...
-  RNA(C, A, U, G)                     // but include [A,U,G], after just one nucleotide
+  val fixture: RNA =
+    RNA(C, C, C, C, C) ++      // semi-random prefix
+    Codon.Start.asRNA ++       // [A,U,G]
+    RNA(A, U, G, C, C, C) ++   // semi-random post-start junk rna
+    Codon.Stop.Amber.asRNA ++  // known amber codon, also a stop codon
+    RNA(C, C, C) ++            // semi-random junk rna
+    Codon.Stop.Opal.asRNA ++   // known opal codon, also a stop codon
+    Codon.Start.asRNA ++       // start again,...
+    RNA(C, A, U, G)            // but include [A,U,G], after just one nucleotide
 
   // expected results at given reference frame
   val expected = Map(

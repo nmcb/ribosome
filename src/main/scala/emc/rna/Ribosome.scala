@@ -1,8 +1,7 @@
-package emc.rna
+package emc
+package rna
 
-import collection.mutable.ListBuffer
-
-object Ribosome {
+object Ribosome:
 
   type PeptideChain = Seq[AminoAcid]
 
@@ -12,34 +11,29 @@ object Ribosome {
    * @param rf The reading frame
    * @return A sequence containing the amino acid molecules encoded by the RNA sequence.
    */
-  def decode(rna: RNA, rf: Int = 0): Seq[PeptideChain] = {
+  def decode(rna: RNA, rf: Int = 0): Seq[PeptideChain] =
+
+    import collection.mutable.ListBuffer
 
     // input parameter rna ia an indexed seq, i.e. immutable
     var started: Boolean = false
-    var sequence: ListBuffer[PeptideChain] = ListBuffer.empty
+    val sequence: ListBuffer[PeptideChain] = ListBuffer.empty
     var chain: ListBuffer[AminoAcid] = ListBuffer.empty
 
-    for (codon <- rna.codons(rf)) codon match {
-      case Codon.Start =>
-        chain += codon.aminoAcid
-        started = true
-
-      case Codon.Stop(_, _, _) =>
-        if (started) {
-          sequence += chain.toSeq
-          chain = ListBuffer.empty
-        }
-      case codon: Codon =>
-        if (started) {
+    for
+      codon <- rna.codons(rf)
+    do
+      codon match
+        case Codon.Start =>
           chain += codon.aminoAcid
-        }
-    }
+          started = true
+        case Codon.Stop(_, _, _) =>
+          if started then
+            sequence += chain.toSeq
+            chain = ListBuffer.empty
+        case codon: Codon =>
+          if started then
+            chain += codon.aminoAcid
 
-    if (chain.nonEmpty) sequence += chain.toSeq
+    if chain.nonEmpty then sequence += chain.toSeq
     sequence.toSeq
-  }
-}
-
-
-
-

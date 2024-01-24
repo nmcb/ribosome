@@ -1,4 +1,5 @@
-package emc.rna
+package emc
+package rna
 
 import collection._
 
@@ -7,17 +8,16 @@ import collection._
  */
 final class RNA private(val slots: Array[Int], val length: Int)
   extends immutable.IndexedSeq[Nucleotide]
-  with immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
-  with immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
-  { rna =>
+  with    immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
+  with    immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]:
+    rna =>
 
     import RNA._
 
     /** Returns the nucleotide at given index */
-    def apply(index: Int): Nucleotide = {
-      if (index < 0 || length <= index) throw new IndexOutOfBoundsException
+    def apply(index: Int): Nucleotide =
+      if index < 0 || length <= index then sys.error("illegal state")
       Nucleotide.fromInt(slots(index / N) >> (index % N * S) & M)
-    }
 
     /** Returns an RNA sequence from given nucleotides. */
     override protected def fromSpecific(nucleotides: IterableOnce[Nucleotide]): RNA =
@@ -74,19 +74,18 @@ final class RNA private(val slots: Array[Int], val length: Int)
      */
     @inline
     override def iterator: Iterator[Nucleotide] =
-      new AbstractIterator[Nucleotide] {
+      new AbstractIterator[Nucleotide]:
         var i = 0
         var b = 0
 
         def hasNext: Boolean =
           i < rna.length
 
-        def next(): Nucleotide = {
-          b = if (i % N == 0) slots(i / N) else b >>> S
+        def next(): Nucleotide =
+          b = if i % N == 0 then slots(i / N) else b >>> S
           i += 1
           Nucleotide.fromInt(b & M)
-        }
-      }
+
 
     /** Returns a codon iterator for this sequence starting at given reading frame,
      * which will drop `rf` nucleotides first, RNA library writers may as conjugated
@@ -96,17 +95,18 @@ final class RNA private(val slots: Array[Int], val length: Int)
      */
     @inline
     def codons(rf: Int): Iterator[Codon] =
-      for {
+      for
         group <- drop(rf).grouped(Codon.GroupSize)
         if group.size == Codon.GroupSize
-      } yield Codon.fromSeq(group)
+      yield
+        Codon.fromSeq(group)
 
     @inline
     def skip(rf: Int): Iterator[Codon] =
       codons(rf)
-  }
 
-object RNA extends SpecificIterableFactory[Nucleotide, RNA] {
+
+object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
 
   /** Defines the number of bits in a nucleotide slot, i.e the number of bit's needed to encode one nucleotide. */
   private val S = 2                // Note : Nucleotides Specific - your mileage may vary ;)
@@ -121,11 +121,10 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA] {
     * @param nucleotides The sequence of nucleotides.
     * @return The RNA sequence from given sequence.
     */
-  def fromSeq(nucleotides: Seq[Nucleotide]): RNA = {
+  def fromSeq(nucleotides: Seq[Nucleotide]): RNA =
     val slots = new Array[Int]((nucleotides.length + N - 1) / N)
-    for (i <- nucleotides.indices) slots(i / N) |= Nucleotide.toInt(nucleotides(i)) << (i % N * S)
+    for i <- nucleotides.indices do slots(i / N) |= Nucleotide.toInt(nucleotides(i)) << (i % N * S)
     new RNA(slots, nucleotides.length)
-  }
 
   /** Creates an empty RNA sequence.
     * @return The empty RNA sequence.
@@ -144,9 +143,6 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA] {
       * @return The RNA sequence from given nucleotides.
       */
   def fromSpecific(nucleotides: IterableOnce[Nucleotide]): RNA =
-    nucleotides match {
+    nucleotides match
       case sequence: Seq[Nucleotide] => fromSeq(sequence)
-      case _ => fromSeq(mutable.ArrayBuffer.from(nucleotides))
-    }
-}
-
+      case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))

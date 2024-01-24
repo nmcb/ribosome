@@ -1,11 +1,10 @@
-package emc.rna
+package emc
+package rna
 
 import org.scalatest.funspec._
 import org.scalatest.matchers.should._
 
-class AminoAcidSpecification
-  extends AnyFunSpec
-  with Matchers {
+class AminoAcidSpecification extends AnyFunSpec with Matchers:
 
   val fixture = RNA(C, A, A, G, G, G, C, U, U, U, C, C, C)
   val xs      = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
@@ -24,4 +23,3 @@ class AminoAcidSpecification
       AminoAcid.fromCodon(Codon.Stop.Opal)  should be(None)
     }
   }
-}

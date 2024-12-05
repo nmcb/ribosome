@@ -2,7 +2,7 @@ val ProjectName      = "ribosome"
 val OrganisationName = "emc"
 val ProjectVersion   = "0.3.0"
 
-val ScalaVersion     = "3.4.2"
+val ScalaVersion     = "3.4.3"
 
 lazy val root = (project in file("."))
   .settings(

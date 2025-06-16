@@ -1,7 +1,7 @@
 package emc
 package rna
 
-import collection._
+import collection.*
 
 /**
  * A ribonucleic acid sequence, e.g. an RNA sequence of nucleotide molecules.

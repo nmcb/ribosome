@@ -1,9 +1,12 @@
 package emc.rna
 
-import org.scalatest.funspec._
+import org.scalatest.funspec.*
 import org.scalatest.matchers.should.Matchers
 
 class RibosomeSpecification extends AnyFunSpec with Matchers:
+
+  import Nucleotide.*
+  import AminoAcid.*
 
   val fixture: RNA =
     RNA(C, C, C, C, C) ++       // semi-random prefix
@@ -23,9 +26,7 @@ class RibosomeSpecification extends AnyFunSpec with Matchers:
       2 -> Seq(Seq(Methionine, Methionine, Proline), Seq(Proline), Seq(Methionine, Histidine))
     )
 
-  describe("A Ribosome") {
+  describe("A Ribosome"):
 
-    it("decodes into a codon sequence relative to given reference frame") {
+    it("decodes into a codon sequence relative to given reference frame"):
       (0 to 2).foreach(i => Ribosome.decode(fixture, i) should be(expected(i)))
-    }
-  }

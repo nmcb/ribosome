@@ -10,6 +10,8 @@ case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide):
     AminoAcid.fromCodon(this).getOrElse(sys.error("dirty rna"))
 
 object Codon:
+  
+  import Nucleotide.*
 
   /**
    * The encoding group size of a codon in nucleotides.

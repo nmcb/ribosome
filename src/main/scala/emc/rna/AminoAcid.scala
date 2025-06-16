@@ -1,29 +1,32 @@
 package emc
 package rna
 
-sealed trait AminoAcid
-case object Phenylalanine extends AminoAcid
-case object Leucine       extends AminoAcid
-case object Isoleucine    extends AminoAcid
-case object Methionine    extends AminoAcid
-case object Valine        extends AminoAcid
-case object Serine        extends AminoAcid
-case object Proline       extends AminoAcid
-case object Threonine     extends AminoAcid
-case object Alanine       extends AminoAcid
-case object Tyrosine      extends AminoAcid
-case object Histidine     extends AminoAcid
-case object Glutamine     extends AminoAcid
-case object Asparagine    extends AminoAcid
-case object Lysine        extends AminoAcid
-case object AsparticAcid  extends AminoAcid
-case object GlutamicAcid  extends AminoAcid
-case object Cysteine      extends AminoAcid
-case object Tryptophan    extends AminoAcid
-case object Arginine      extends AminoAcid
-case object Glycine       extends AminoAcid
+enum AminoAcid:
+  case Phenylalanine
+  case Leucine
+  case Isoleucine
+  case Methionine
+  case Valine
+  case Serine
+  case Proline
+  case Threonine
+  case Alanine
+  case Tyrosine
+  case Histidine
+  case Glutamine
+  case Asparagine
+  case Lysine
+  case AsparticAcid
+  case GlutamicAcid
+  case Cysteine
+  case Tryptophan
+  case Arginine
+  case Glycine
 
 object AminoAcid:
+
+  import Nucleotide.*
+
   def fromCodon(codon: Codon): Option[AminoAcid] =
     codon match
       case Codon(G, G, G) => Some(Glycine)

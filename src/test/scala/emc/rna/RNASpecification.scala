@@ -1,10 +1,13 @@
 package emc
 package rna
 
-import org.scalatest.funspec._
-import org.scalatest.matchers.should._
+import org.scalatest.funspec.*
+import org.scalatest.matchers.should.*
 
 class RNASpecification extends AnyFunSpec with Matchers:
+
+  import Nucleotide.*
+  import AminoAcid.*
 
   val fixture: RNA =
     RNA(C, C, C, C, C) ++      // semi-random prefix
@@ -23,15 +26,14 @@ class RNASpecification extends AnyFunSpec with Matchers:
     2 -> Seq(Seq(Methionine, Methionine, Proline), Seq(Proline), Seq(Methionine, Histidine))
   )
 
-  describe("An RNA sequence") {
+  describe("An RNA sequence"):
 
-    it("concatenates, i.e. (++)") {
+    it("concatenates, i.e. (++)"):
       fixture should be(
         RNA(C, C, C, C, C, A, U, G, A, U, G, C, C, C, U, A, G, C, C, C, U, A, A, A, U, G, C, A, U, G)
       )
-    }
 
-    it("know its codons relative to given reference frame") {
+    it("know its codons relative to given reference frame"):
       fixture.codons(0).toSeq should be(Seq(
         Codon(C, C, C),
         Codon(C, C, A),
@@ -66,5 +68,3 @@ class RNASpecification extends AnyFunSpec with Matchers:
         Codon(A, U, G),
         Codon(C, A, U))
       )
-    }
-  }

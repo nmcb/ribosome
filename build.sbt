@@ -1,6 +1,6 @@
 val ProjectName      = "ribosome"
 val OrganisationName = "emc"
-val ProjectVersion   = "0.3.0"
+val ProjectVersion   = "0.3.1"
 
 val ScalaVersion     = "3.7.1"
 

@@ -7,7 +7,7 @@ class InterpolationSpecification extends AnyFunSpec with Matchers:
 
   import Nucleotide.*
 
-  describe("An RNA interpolation"):
+  describe("String interpolation"):
 
     it("interpolates valid nucleotide strings"):
       rna"AUGC" should be( RNA(A, U, G, C))

@@ -156,5 +156,5 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
       case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
 
 extension (sc: StringContext)
-  def rna(args: RNA*): RNA =
-    RNA.fromString(sc.s(args))
+  def rna(args: Any*): RNA =
+    RNA.fromString(sc.s(args*))

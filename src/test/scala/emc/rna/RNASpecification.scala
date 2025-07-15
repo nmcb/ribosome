@@ -10,14 +10,14 @@ class RNASpecification extends AnyFunSpec with Matchers:
   import AminoAcid.*
 
   val fixture: RNA =
-    RNA(C, C, C, C, C) ++      // semi-random prefix
+    rna"CCCCC" ++              // semi-random prefix
     Codon.Start.asRNA ++       // [A,U,G]
-    RNA(A, U, G, C, C, C) ++   // semi-random post-start junk rna
+    rna"AUGCCC" ++             // semi-random post-start junk rna
     Codon.Stop.Amber.asRNA ++  // known amber codon, also a stop codon
-    RNA(C, C, C) ++            // semi-random junk rna
+    rna"CCC" ++                // semi-random junk rna
     Codon.Stop.Opal.asRNA ++   // known opal codon, also a stop codon
     Codon.Start.asRNA ++       // start again,...
-    RNA(C, A, U, G)            // but include [A,U,G], after just one nucleotide
+    rna"CAUG"                  // but include [A,U,G], after just one nucleotide
 
   // expected results at given reference frame
   val expected = Map(

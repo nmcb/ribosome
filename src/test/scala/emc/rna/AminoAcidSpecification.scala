@@ -9,7 +9,7 @@ class AminoAcidSpecification extends AnyFunSpec with Matchers:
   import Nucleotide.*
   import AminoAcid.*
 
-  val fixture = RNA(C, A, A, G, G, G, C, U, U, U, C, C, C)
+  val fixture = rna"CAAGGGCUUUCCC"
   val xs      = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
 
   describe("An amino acid"):

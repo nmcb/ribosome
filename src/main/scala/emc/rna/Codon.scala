@@ -9,6 +9,9 @@ case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide):
   def aminoAcid: AminoAcid =
     AminoAcid.fromCodon(this).getOrElse(sys.error("dirty rna"))
 
+  override def toString: String =
+    s"${_1.char}${_2.char}${_3.char}"
+
 object Codon:
   
   import Nucleotide.*

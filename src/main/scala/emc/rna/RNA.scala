@@ -16,7 +16,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
 
     /** Returns the nucleotide at given index */
     def apply(index: Int): Nucleotide =
-      if index < 0 || length <= index then sys.error("illegal state")
+      if index < 0 || length <= index then sys.error(s"illegal state index: $index")
       Nucleotide.fromInt(slots(index / N) >> (index % N * S) & M)
 
     /** Returns an RNA sequence from given nucleotides. */
@@ -30,6 +30,13 @@ final class RNA private(val slots: Array[Int], val length: Int)
     /** Returns an empty RNA sequence. */
     override def empty: RNA =
       RNA.empty
+
+    /** Returns this RNA sequence as a string */
+    override def toString: String =
+      val buffer = StringBuffer(length)
+      for i <- 0 until length do
+        buffer.append(apply(i).toString)
+      buffer.toString
 
     // Overloads returning RNA
 
@@ -157,4 +164,4 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
 
 extension (sc: StringContext)
   def rna(args: Any*): RNA =
-    RNA.fromString(sc.s(args*))
+    RNA.fromString(sc.s(args.map(_.toString)*))

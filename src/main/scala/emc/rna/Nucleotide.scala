@@ -1,18 +1,19 @@
 package emc
 package rna
 
-enum Nucleotide:
-  case G, A, U, C
+enum Nucleotide(val char: Char):
+  case G extends Nucleotide('G')
+  case A extends Nucleotide('A')
+  case U extends Nucleotide('U')
+  case C extends Nucleotide('C')
+
+  override def toString: String =
+    s"$char"
 
 object Nucleotide:
   
   def fromChar(c: Char): Nucleotide =
-    c match
-      case 'G' => G
-      case 'A' => A
-      case 'U' => U
-      case 'C' => C
-      case _   => sys.error(s"Not a nucleotide char: $c")
+    values.find(_.char == c).getOrElse(sys.error(s"Not a nucleotide char: $c"))
 
   val fromInt: Int => Nucleotide =
     Array(G, A, U, C)

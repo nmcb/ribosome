@@ -177,28 +177,24 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
       case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
 
 extension (sc: StringContext)
-  
   def rna(args: Any*): RNA =
     import Nucleotide.*
     import RNA.*
     val parsed =
       args.map:
-        case rna: RNA => rna.toString
-        case codon: Codon => codon.toString
-        case nucleotide: Nucleotide => nucleotide.toString
-        case seq: Seq[_] => fromSeq(seq.asInstanceOf[Seq[Nucleotide]]).toString
+        case rna: RNA                                => rna.toString
+        case codon: Codon                            => codon.toString
+        case nucleotide: Nucleotide                  => nucleotide.toString
+        case seq: Seq[Nucleotide] @unchecked         => seq.mkString("", "", "")
         case s: String if s.forall(isNucleotideChar) => s
-        case c: Char if isNucleotideChar(c) => c.toString
+        case c: Char   if isNucleotideChar(c)        => c.toString
         case arg => sys.error(s"not a nucleotide sequence: $arg")
 
-    fromString(sc.s(parsed *))
+    fromString(sc.s(parsed*))
 
 implicit class RNAExtractor(context: StringContext):
-  
+  import RNA.*
   object rna:
-    import RNA.*
-    import scala.util.matching.Regex
-    
     def unapplySeq(rna: RNA): Option[Seq[RNA]] =
       context
         .parts

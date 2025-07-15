@@ -6,8 +6,6 @@ enum Nucleotide:
 
 object Nucleotide:
   
-  import Nucleotide.*
-  
   def fromChar(c: Char): Nucleotide =
     c match
       case 'G' => G

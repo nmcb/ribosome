@@ -202,7 +202,6 @@ implicit class RNAExtractor(context: StringContext):
     def unapplySeq(rna: RNA): Option[Seq[RNA]] =
       context
         .parts
-        .map(Regex.quote)
         .mkString("^", "([^/]+)", "$")
         .r
         .unapplySeq(rna.toString)

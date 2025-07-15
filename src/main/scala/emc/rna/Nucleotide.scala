@@ -7,6 +7,14 @@ enum Nucleotide:
 object Nucleotide:
   
   import Nucleotide.*
+  
+  def fromChar(c: Char): Nucleotide =
+    c match
+      case 'G' => G
+      case 'A' => A
+      case 'U' => U
+      case 'C' => C
+      case _   => sys.error(s"Not a nucleotide char: $c")
 
   val fromInt: Int => Nucleotide =
     Array(G, A, U, C)

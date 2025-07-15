@@ -117,6 +117,14 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
   /** Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an integer of 32 bits. */
   private val N = 32 / S           // Note : Nucleotides and JVM Specific - your mileage may vary ;)
 
+  /** Creates an RNA sequence from given string of nucleotide chars.
+   * @param s The string of nucleotide chars.
+   * @return The RNA sequence from given string.
+   */
+  def fromString(s: String): RNA =
+    fromSeq(s.map(Nucleotide.fromChar))
+
+
   /** Creates an RNA sequence from given scala collection sequence of nucleotides.
     * @param nucleotides The sequence of nucleotides.
     * @return The RNA sequence from given sequence.
@@ -146,3 +154,7 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
     nucleotides match
       case sequence: Seq[Nucleotide] => fromSeq(sequence)
       case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
+
+extension (sc: StringContext)
+  def rna(args: RNA*): RNA =
+    RNA.fromString(sc.s(args))

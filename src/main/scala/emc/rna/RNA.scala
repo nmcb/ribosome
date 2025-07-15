@@ -10,7 +10,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
   extends immutable.IndexedSeq[Nucleotide]
   with    immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
   with    immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]:
-    rna =>
+    self =>
 
     import RNA._
 
@@ -38,7 +38,12 @@ final class RNA private(val slots: Array[Int], val length: Int)
         buffer.append(apply(i).toString)
       buffer.toString
 
-    // Overloads returning RNA
+    def unapplySeq(s: RNA): Option[Seq[RNA]] =
+      Some(Seq(empty))
+
+
+
+  // Overloads returning RNA
 
     @inline
     final def concat(nucleotides: IterableOnce[Nucleotide]): RNA =
@@ -86,7 +91,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
         var b = 0
 
         def hasNext: Boolean =
-          i < rna.length
+          i < self.length
 
         def next(): Nucleotide =
           b = if i % N == 0 then slots(i / N) else b >>> S
@@ -124,12 +129,21 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
   /** Defines the number of slots in an Int, i.e. the number of nucleotides that fit in an integer of 32 bits. */
   private val N = 32 / S           // Note : Nucleotides and JVM Specific - your mileage may vary ;)
 
+  /** Creates an RNA sequence from given string of chars.
+   * @param s The string of nucleotide chars.
+   * @return Some RNA sequence from given string or none if given string contains non-nucleotide chars.
+   */
+  def parseString(s: String): Option[RNA] =
+    import Nucleotide.*
+    Option.when(s.forall(isNucleotideChar))(fromSeq(s.map(fromChar)))
+
   /** Creates an RNA sequence from given string of nucleotide chars.
    * @param s The string of nucleotide chars.
    * @return The RNA sequence from given string.
+   * @throws RuntimeException if given string contains non-nucleotide chars.
    */
   def fromString(s: String): RNA =
-    fromSeq(s.map(Nucleotide.fromChar))
+    parseString(s).getOrElse(sys.error(s"contains non-nucleotide chars: $s"))
 
 
   /** Creates an RNA sequence from given scala collection sequence of nucleotides.
@@ -163,5 +177,34 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
       case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
 
 extension (sc: StringContext)
+  
   def rna(args: Any*): RNA =
-    RNA.fromString(sc.s(args.map(_.toString)*))
+    import Nucleotide.*
+    import RNA.*
+    val parsed =
+      args.map:
+        case rna: RNA => rna.toString
+        case codon: Codon => codon.toString
+        case nucleotide: Nucleotide => nucleotide.toString
+        case seq: Seq[_] => fromSeq(seq.asInstanceOf[Seq[Nucleotide]]).toString
+        case s: String if s.forall(isNucleotideChar) => s
+        case c: Char if isNucleotideChar(c) => c.toString
+        case arg => sys.error(s"not a nucleotide sequence: $arg")
+
+    fromString(sc.s(parsed *))
+
+implicit class RNAExtractor(context: StringContext):
+  
+  object rna:
+    import RNA.*
+    import scala.util.matching.Regex
+    
+    def unapplySeq(rna: RNA): Option[Seq[RNA]] =
+      context
+        .parts
+        .map(Regex.quote)
+        .mkString("^", "([^/]+)", "$")
+        .r
+        .unapplySeq(rna.toString)
+        .map(_.map(fromString))
+    

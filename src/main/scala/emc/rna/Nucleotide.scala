@@ -11,7 +11,10 @@ enum Nucleotide(val char: Char):
     s"$char"
 
 object Nucleotide:
-  
+
+  def isNucleotideChar(c: Char): Boolean =
+    values.exists(_.char == c)
+
   def fromChar(c: Char): Nucleotide =
     values.find(_.char == c).getOrElse(sys.error(s"Not a nucleotide char: $c"))
 

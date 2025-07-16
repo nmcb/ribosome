@@ -37,7 +37,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
       for i <- 0 until length do
         buffer.append(apply(i).toString)
       buffer.toString
-  
+
   // Overloads returning RNA
 
     @inline

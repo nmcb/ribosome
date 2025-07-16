@@ -9,14 +9,14 @@ class AminoAcidSpecification extends AnyFunSpec with Matchers:
   import Nucleotide.*
   import AminoAcid.*
 
-  val fixture = rna"CAAGGGCUUUCCC"
-  val xs      = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
+  val rna = rna"CAAGGGCUUUCCC"
+  val xs  = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
 
   describe("An amino acid"):
 
     it("requires to be decoded from known codon sequences, including rna sequences"):
-      AminoAcid.fromCodon(Codon.fromSeq(xs))      should be(Some(Glutamine))
-      AminoAcid.fromCodon(Codon.fromSeq(fixture)) should be(Some(Glutamine))
+      AminoAcid.fromCodon(Codon.fromSeq(xs))  should be(Some(Glutamine))
+      AminoAcid.fromCodon(Codon.fromSeq(rna)) should be(Some(Glutamine))
 
     it("requires to decoded from codon corner cases"):
       AminoAcid.fromCodon(Codon.Start)      should be (Some(Methionine))

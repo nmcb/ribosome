@@ -33,6 +33,6 @@ class InterpolationSpecification extends AnyFunSpec with Matchers:
   describe("RNA matching"):
     
     it("matches valid rna sequences"):
-      val rna"AUG${actual1}AUG${actual2}" = rna"AUGCCCAUGAAA": @unchecked
-      actual1 should be(RNA(C, C, C))
-      actual2 should be(RNA(A, A, A))
+      val rna"AUG${match1}AUG${match2}" = rna"AUGCCCAUGAAA": @unchecked
+      match1 should be(RNA(C, C, C))
+      match2 should be(RNA(A, A, A))

@@ -4,7 +4,7 @@ package rna
 import collection.*
 
 /**
- * A ribonucleic acid sequence, e.g. an RNA sequence of nucleotide molecules.
+ * A ribonucleic acid sequence, i.e. an RNA sequence of nucleotide molecules.
  */
 final class RNA private(val slots: Array[Int], val length: Int)
   extends immutable.IndexedSeq[Nucleotide]
@@ -115,7 +115,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
 
 object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
 
-  /** Defines the number of bits in a nucleotide slot, i.e the number of bit's needed to encode one nucleotide. */
+  /** Defines the number of bits in a nucleotide slot, i.e. the number of bit's needed to encode one nucleotide. */
   private val S = 2                // Note : Nucleotides Specific - your mileage may vary ;)
 
   /** Defines the bitmask to isolate the least significant slot, i.e. cuts of a nucleotide from an RNA sequence. */

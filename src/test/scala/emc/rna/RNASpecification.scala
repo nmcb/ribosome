@@ -19,13 +19,6 @@ class RNASpecification extends AnyFunSpec with Matchers:
     Codon.Start.asRNA ++       // start again,...
     rna"CAUG"                  // but include [A,U,G], after just one nucleotide
 
-  // expected results at given reference frame
-  val expected = Map(
-    0 -> Seq(Seq(Methionine)),
-    1 -> Seq(),
-    2 -> Seq(Seq(Methionine, Methionine, Proline), Seq(Proline), Seq(Methionine, Histidine))
-  )
-
   describe("An RNA sequence"):
 
     it("concatenates, i.e. (++)"):

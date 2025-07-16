@@ -15,7 +15,7 @@ class InterpolationSpecification extends AnyFunSpec with Matchers:
   describe("String interpolation"):
 
     it("interpolates valid nucleotide strings"):
-      rna"AUGC" should be( RNA(A, U, G, C))
+      rna"AUGC" should be(RNA(A, U, G, C))
 
     it("injects valid rna sequences"):
       rna"AUGC$rna" should be(RNA(A, U, G, C, C, C, C))

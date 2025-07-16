@@ -38,11 +38,6 @@ final class RNA private(val slots: Array[Int], val length: Int)
         buffer.append(apply(i).toString)
       buffer.toString
 
-    def unapplySeq(s: RNA): Option[Seq[RNA]] =
-      Some(Seq(empty))
-
-
-
   // Overloads returning RNA
 
     @inline
@@ -176,7 +171,7 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
       case sequence: Seq[Nucleotide] => fromSeq(sequence)
       case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
 
-extension (sc: StringContext)
+extension (context: StringContext)
   def rna(args: Any*): RNA =
     import Nucleotide.*
     import RNA.*
@@ -190,7 +185,7 @@ extension (sc: StringContext)
         case c: Char   if isNucleotideChar(c)        => c.toString
         case arg => sys.error(s"not a nucleotide sequence: $arg")
 
-    fromString(sc.s(parsed*))
+    fromString(context.s(parsed*))
 
 implicit class RNAExtractor(context: StringContext):
   import RNA.*
@@ -202,4 +197,3 @@ implicit class RNAExtractor(context: StringContext):
         .r
         .unapplySeq(rna.toString)
         .map(_.map(fromString))
-    

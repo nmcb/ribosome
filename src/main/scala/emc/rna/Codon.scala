@@ -39,7 +39,7 @@ object Codon:
     def unapply(codon: Codon): Option[(Nucleotide, Nucleotide, Nucleotide)] =
       if codon.isStop then Some((codon._1, codon._2, codon._3)) else None
 
-  import Stop._
+  import Stop.*
 
   /**
    * Convenience definition for the set of stop codons.

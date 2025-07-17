@@ -24,19 +24,20 @@ object Codon:
   /**
    * Defines the start codon.
    */
-  val Start = Codon(A, U, G)
+  val Start = Codon(A,U,G)
 
   /**
    * Defines a stop codon extractor i.o.t. pattern match Amber, Occur and Opal, i.e. UAG, UGA and UAA.
    */
   object Stop:
-    val Amber = Codon(U, A, G)
-    val Occur = Codon(U, G, A)
-    val Opal  = Codon(U, A, A)
+    val Amber = Codon(U,A,G)
+    val Occur = Codon(U,G,A)
+    val Opal  = Codon(U,A,A)
 
-    def apply(n1: Nucleotide, n2: Nucleotide, n3: Nucleotide): Codon = Codon(n1, n2, n3)
-
-    def unapply(codon: Codon): Option[(Nucleotide, Nucleotide, Nucleotide)] =
+    def apply(n1: Nucleotide, n2: Nucleotide, n3: Nucleotide): Codon =
+      Codon(n1, n2, n3)
+    
+    def unapply(codon: Codon): Option[(Nucleotide,Nucleotide,Nucleotide)] =
       if codon.isStop then Some((codon._1, codon._2, codon._3)) else None
 
   import Stop.*
@@ -61,5 +62,5 @@ object Codon:
    */
   def fromSeq(rna: Seq[Nucleotide]): Codon =
     rna match
-      case Seq(_1, _2, _3, _*) => Codon(_1, _2, _3)
-      case _                   => sys.error(s"not enough nucleotides: $rna")
+      case Seq(_1,_2,_3,_*) => Codon(_1, _2, _3)
+      case _                => sys.error(s"not enough nucleotides: $rna")

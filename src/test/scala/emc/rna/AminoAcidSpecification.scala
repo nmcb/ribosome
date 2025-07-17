@@ -10,7 +10,7 @@ class AminoAcidSpecification extends AnyFunSpec with Matchers:
   import AminoAcid.*
 
   val rna = rna"CAAGGGCUUUCCC"
-  val xs  = Seq(C, A, A, G, G, G, C, U, U, U, C, C, C)
+  val xs  = Seq(C,A,A,G,G,G,C,U,U,U,C,C,C)
 
   describe("An amino acid"):
 

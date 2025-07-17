@@ -27,7 +27,7 @@ object Ribosome:
         case Codon.Start =>
           chain += codon.aminoAcid
           started = true
-        case Codon.Stop(_, _, _) =>
+        case Codon.Stop(_,_,_) =>
           if started then
             sequence += chain.toSeq
             chain = ListBuffer.empty

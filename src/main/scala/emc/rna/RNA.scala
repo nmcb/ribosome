@@ -8,15 +8,15 @@ import collection.*
  */
 final class RNA private(val slots: Array[Int], val length: Int)
   extends immutable.IndexedSeq[Nucleotide]
-  with    immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]
-  with    immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq, RNA]:
+  with    immutable.IndexedSeqOps[Nucleotide,immutable.IndexedSeq,RNA]
+  with    immutable.StrictOptimizedSeqOps[Nucleotide,immutable.IndexedSeq,RNA]:
     self =>
 
     import RNA._
 
     /** Returns the nucleotide at given index */
     def apply(index: Int): Nucleotide =
-      if index < 0 || length <= index then sys.error(s"illegal state index: $index")
+      if index < 0 || length <= index then sys.error(s"index out of bounds: $index")
       Nucleotide.fromInt(slots(index / N) >> (index % N * S) & M)
 
     /** Returns an RNA sequence from given nucleotides. */
@@ -24,7 +24,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
       RNA.fromSpecific(nucleotides)
 
     /** Returns an RNA sequence builder from given specific nucleotides. */
-    override protected def newSpecificBuilder: mutable.Builder[Nucleotide, RNA] =
+    override protected def newSpecificBuilder: mutable.Builder[Nucleotide,RNA] =
       RNA.newBuilder
 
     /** Returns an empty RNA sequence. */
@@ -113,7 +113,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
       codons(rf)
 
 
-object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
+object RNA extends SpecificIterableFactory[Nucleotide,RNA]:
 
   /** Defines the number of bits in a nucleotide slot, i.e. the number of bit's needed to encode one nucleotide. */
   private val S = 2                // Note : Nucleotides Specific - your mileage may vary ;)
@@ -159,7 +159,7 @@ object RNA extends SpecificIterableFactory[Nucleotide, RNA]:
   /** Creates a mutable RNA sequence builder.
    * @return The mutable RNA sequence builder.
    */
-  def newBuilder: mutable.Builder[Nucleotide, RNA] =
+  def newBuilder: mutable.Builder[Nucleotide,RNA] =
     mutable.ArrayBuffer.newBuilder[Nucleotide].mapResult(fromSeq)
 
     /** Creates an RNA sequence from given iterable nucleotides.

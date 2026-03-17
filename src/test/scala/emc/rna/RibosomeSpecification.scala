@@ -9,7 +9,7 @@ class RibosomeSpecification extends AnyFunSpec with Matchers:
   import AminoAcid.*
 
   // expected results at given reference frame
-  val expected =
+  val expected: Map[Int, Seq[Seq[AminoAcid]]] =
     Map(
       0 -> Seq(Seq(Methionine)),
       1 -> Seq(),

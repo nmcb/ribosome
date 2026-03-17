@@ -8,8 +8,8 @@ import collection.*
  */
 final class RNA private(val slots: Array[Int], val length: Int)
   extends immutable.IndexedSeq[Nucleotide]
-  with    immutable.IndexedSeqOps[Nucleotide,immutable.IndexedSeq,RNA]
-  with    immutable.StrictOptimizedSeqOps[Nucleotide,immutable.IndexedSeq,RNA]:
+  with    immutable.IndexedSeqOps[Nucleotide, immutable.IndexedSeq,RNA]
+  with    immutable.StrictOptimizedSeqOps[Nucleotide, immutable.IndexedSeq,RNA]:
     self =>
 
     import RNA._
@@ -40,36 +40,28 @@ final class RNA private(val slots: Array[Int], val length: Int)
 
   // Overloads returning RNA
 
-    @inline
-    final def concat(nucleotides: IterableOnce[Nucleotide]): RNA =
+    inline def concat(nucleotides: IterableOnce[Nucleotide]): RNA =
       strictOptimizedConcat(nucleotides, newSpecificBuilder)
 
-    @inline
-    final def ++(nucleotides: IterableOnce[Nucleotide]): RNA =
+    inline def ++(nucleotides: IterableOnce[Nucleotide]): RNA =
       concat(nucleotides)
-
-    @inline
-    final def appended(nucleotide: Nucleotide): RNA =
+  
+    inline def appended(nucleotide: Nucleotide): RNA =
       (newSpecificBuilder ++= this += nucleotide).result()
-
-    @inline
-    final def appendedAll(nucleotides: Iterable[Nucleotide]): RNA =
+  
+    inline def appendedAll(nucleotides: Iterable[Nucleotide]): RNA =
       strictOptimizedConcat(nucleotides, newSpecificBuilder)
-
-    @inline
-    final def prepended(nucleotide: Nucleotide): RNA =
+  
+    inline def prepended(nucleotide: Nucleotide): RNA =
       (newSpecificBuilder += nucleotide ++= this).result()
-
-    @inline
-    final def prependedAll(nucleotides: Iterable[Nucleotide]): RNA =
+  
+    inline def prependedAll(nucleotides: Iterable[Nucleotide]): RNA =
       (newSpecificBuilder ++= nucleotides ++= this).result()
-
-    @inline
-    final def map(f: Nucleotide => Nucleotide): RNA =
+  
+    inline def map(f: Nucleotide => Nucleotide): RNA =
       strictOptimizedMap(newSpecificBuilder, f)
-
-    @inline
-    final def flatMap(f: Nucleotide => IterableOnce[Nucleotide]): RNA =
+  
+    inline def flatMap(f: Nucleotide => IterableOnce[Nucleotide]): RNA =
       strictOptimizedFlatMap(newSpecificBuilder, f)
 
     /**
@@ -79,8 +71,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
      * sequence since we know the length of the sequence and the group size N in
      * terms of emc.rna.Nucleotide symbols.
      */
-    @inline
-    override def iterator: Iterator[Nucleotide] =
+    inline override def iterator: Iterator[Nucleotide] =
       new AbstractIterator[Nucleotide]:
         var i = 0
         var b = 0
@@ -100,16 +91,14 @@ final class RNA private(val slots: Array[Int], val length: Int)
      *
      * @return A codon iterator for this RNA sequence.
      */
-    @inline
-    def codons(rf: Int): Iterator[Codon] =
+    inline def codons(rf: Int): Iterator[Codon] =
       for
         group <- drop(rf).grouped(Codon.GroupSize)
         if group.size == Codon.GroupSize
       yield
         Codon.fromSeq(group)
-
-    @inline
-    def skip(rf: Int): Iterator[Codon] =
+  
+    inline def skip(rf: Int): Iterator[Codon] =
       codons(rf)
 
 

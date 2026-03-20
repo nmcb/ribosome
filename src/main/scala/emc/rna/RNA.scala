@@ -71,7 +71,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
      * sequence since we know the length of the sequence and the group size N in
      * terms of emc.rna.Nucleotide symbols.
      */
-    inline override def iterator: Iterator[Nucleotide] =
+    override def iterator: Iterator[Nucleotide] =
       new AbstractIterator[Nucleotide]:
         var i = 0
         var b = 0

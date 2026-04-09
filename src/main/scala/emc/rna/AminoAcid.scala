@@ -1,7 +1,7 @@
 package emc
 package rna
 
-enum AminoAcid:
+enum AminoAcid derives CanEqual:
   case Phenylalanine
   case Leucine
   case Isoleucine

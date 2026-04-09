@@ -1,7 +1,7 @@
 package emc
 package rna
 
-enum Nucleotide(val char: Char):
+enum Nucleotide(val char: Char) derives CanEqual:
   case G extends Nucleotide('G')
   case A extends Nucleotide('A')
   case U extends Nucleotide('U')

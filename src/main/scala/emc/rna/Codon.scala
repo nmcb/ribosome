@@ -1,7 +1,7 @@
 package emc
 package rna
 
-case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide):
+case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide) derives CanEqual:
   lazy val asRNA : RNA      = RNA(_1, _2, _3)
   lazy val isStart: Boolean = Codon.Start.equals(this)
   lazy val isStop: Boolean  = Codon.StopCodons.contains(this)

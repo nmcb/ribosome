@@ -157,8 +157,8 @@ object RNA extends SpecificIterableFactory[Nucleotide,RNA]:
       */
   def fromSpecific(nucleotides: IterableOnce[Nucleotide]): RNA =
     nucleotides match
-      case sequence: Seq[Nucleotide] => fromSeq(sequence)
-      case _                         => fromSeq(mutable.ArrayBuffer.from(nucleotides))
+      case sequence: Seq[Nucleotide] @unchecked => fromSeq(sequence)
+      case other: IterableOnce[Nucleotide]      => fromSeq(mutable.ArrayBuffer.from(other))
 
 extension (context: StringContext)
   def rna(args: Any*): RNA =

@@ -5,8 +5,8 @@ import org.scalatest.matchers.should.Matchers
 
 class RibosomeSpecification extends AnyFunSpec with Matchers:
 
-  import Nucleotide.*
   import AminoAcid.*
+  import RNASpecification.*
 
   // expected results at given reference frame
   val expected: Map[Int, Seq[Seq[AminoAcid]]] =

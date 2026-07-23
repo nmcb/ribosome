@@ -87,7 +87,7 @@ final class RNA private(val slots: Array[Int], val length: Int)
 
     /** Returns a codon iterator for this sequence starting at given reading frame,
      * which will drop `rf` nucleotides first, RNA library writers may as conjugated
-     * with RNA application writers may prefer to read `codons` as `skip`.
+     * with RNA application writers prefer to read the `codons` reference frame as `skip`.
      *
      * @return A codon iterator for this RNA sequence.
      */

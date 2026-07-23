@@ -6,18 +6,8 @@ import org.scalatest.matchers.should.*
 
 class RNASpecification extends AnyFunSpec with Matchers:
 
-  val fixture: RNA =
-    rna"CCCCC" ++ // semi-random prefix
-      Codon.Start.asRNA ++ // [A,U,G]
-      rna"AUGCCC" ++ // semi-random post-start junk rna
-      Codon.Stop.Amber.asRNA ++ // known amber codon, also a stop codon
-      rna"CCC" ++ // semi-random junk rna
-      Codon.Stop.Opal.asRNA ++ // known opal codon, also a stop codon
-      Codon.Start.asRNA ++ // start again,...
-      rna"CAUG" // but include [A,U,G], after just one nucleotide
-
-
   import Nucleotide.*
+  import RNASpecification.*
 
   describe("An RNA sequence"):
 
@@ -56,3 +46,15 @@ class RNASpecification extends AnyFunSpec with Matchers:
         Codon(A, U, G),
         Codon(C, A, U))
       )
+
+object RNASpecification:
+
+  val fixture: RNA =
+    rna"CCCCC" ++ // semi-random prefix
+      Codon.Start.asRNA ++ // [A,U,G]
+      rna"AUGCCC" ++ // semi-random post-start junk rna
+      Codon.Stop.Amber.asRNA ++ // known amber codon, also a stop codon
+      rna"CCC" ++ // semi-random junk rna
+      Codon.Stop.Opal.asRNA ++ // known opal codon, also a stop codon
+      Codon.Start.asRNA ++ // start again,...
+      rna"CAUG" // but include [A,U,G], after just one nucleotide

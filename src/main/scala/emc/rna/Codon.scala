@@ -4,7 +4,7 @@ package rna
 case class Codon(_1: Nucleotide, _2: Nucleotide, _3: Nucleotide) derives CanEqual:
   lazy val asRNA : RNA      = RNA(_1, _2, _3)
   lazy val isStart: Boolean = Codon.Start.equals(this)
-  lazy val isStop: Boolean  = Codon.StopCodons.contains(this)
+  lazy val isStop: Boolean  = Codon.Stop.Codons.contains(this)
 
   def aminoAcid: AminoAcid =
     AminoAcid.fromCodon(this).getOrElse(sys.error("dirty rna"))
@@ -34,25 +34,24 @@ object Codon:
     val Occur = Codon(U,G,A)
     val Opal  = Codon(U,A,A)
 
+    /**
+     * Convenience definition for the set of stop codons.
+     */
+    val Codons: Set[Codon] =
+      Set(Amber, Occur, Opal)
+
+    /**
+     * Convenience definition of the set of stop codon names.
+     */
+    val CodonNames: Codon => String =
+      Map(Amber -> "Amber", Occur -> "Occur", Opal -> "Opal")
+
     def apply(n1: Nucleotide, n2: Nucleotide, n3: Nucleotide): Codon =
       Codon(n1, n2, n3)
     
     def unapply(codon: Codon): Option[(Nucleotide,Nucleotide,Nucleotide)] =
       if codon.isStop then Some((codon._1, codon._2, codon._3)) else None
 
-  import Stop.*
-
-  /**
-   * Convenience definition for the set of stop codons.
-   */
-  val StopCodons: Set[Codon] =
-    Set(Amber, Occur, Opal)
-
-  /**
-   * Convenience definition of the set of stop codon names.
-   */
-  val StopCodonNames: Codon => String =
-    Map(Amber -> "Amber", Occur -> "Occur", Opal -> "Opal")
 
   /**
    * Constructs a codon from the first three nucleotides of given sequence.
